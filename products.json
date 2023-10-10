@@ -1,0 +1,35 @@
+[
+	{
+		"id": "bb851e8b-853b-4910-8fa5-631f9712866d",
+		"title": "Papelera",
+		"status": true,
+		"category": "papeleria",
+		"description": "Papelera Negra",
+		"price": 200,
+		"thumbnails": [],
+		"code": "AA02",
+		"stock": 500
+	},
+	{
+		"id": "5a04d74b-dc50-4ca4-8d65-d817d3eb8e35",
+		"title": "Papelera3",
+		"status": true,
+		"category": "papeleria",
+		"description": "Papelera Negra",
+		"price": 200,
+		"thumbnails": [],
+		"code": "AA02",
+		"stock": 500
+	},
+	{
+		"id": "0486433d-b4d8-48db-9b45-f309b89d1e8a",
+		"title": "Papelera4",
+		"status": true,
+		"category": "papeleria",
+		"description": "Papelera Negra",
+		"price": 200,
+		"thumbnails": [],
+		"code": "AA02",
+		"stock": 500
+	}
+]
