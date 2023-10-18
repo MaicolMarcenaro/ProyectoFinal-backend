@@ -21,12 +21,21 @@ router.get('/products', (req, res)=>{
     }
     
 });
+router.get('/products/:pId', (req, res)=>{
+    const products= classProducts.getProductsPlain()
+    const {pId} = req.params;
+    const searchId = classProducts.getProductById(pId);
+    if (searchId) {
+        res.status(200).json(searchId);
+    } else {
+        res.status(200).json(products);
+    }
+    
+});
 router.post('/products',(req,res)=>{
     const {body} = req;
     const newProduct = {
-        id: uuidv4(),
-        status: true,
-        thumbnails: [],
+        
         ...body
     }
     classProducts.addProduct(newProduct)

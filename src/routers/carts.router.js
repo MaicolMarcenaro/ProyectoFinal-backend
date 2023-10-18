@@ -21,23 +21,29 @@ router.post('/carts', (req,res)=>{
 router.get('/carts/:cId', (req,res)=>{
     const {cId} = req.params;
     const cartFilter = carts.find(c => c.id== cId)
-    const cartProducts = cartFilter.products
-    const cartProductsFilter = []
-    cartProducts.forEach(e => {
-        cartProductsFilter.push(e.pId)
-    });
-    const listaProducts = []
-    cartProductsFilter.forEach(ele=>{
-        const prd = classProducts.getProductById(ele)
-        listaProducts.push(prd)
-    })
-
-    const listaCart={
-        'id':cId,
-        "prducts":listaProducts
-    }
     if (cartFilter) {
-        res.status(200).json(listaCart)
+        const cartProducts = cartFilter.products
+        if (cartProducts) {
+            const cartProductsFilter = []
+            cartProducts.forEach(e => {
+                cartProductsFilter.push(e.pId)
+            });
+            const listaProducts = []
+            cartProductsFilter.forEach(ele=>{
+                const prd = classProducts.getProductById(ele)
+                listaProducts.push(prd)
+            })
+
+            const listaCart={
+                'id':cId,
+                "prducts":listaProducts
+            }
+            
+            res.status(200).json(listaCart)
+        }else{
+            res.status(200).json(cartFilter)
+        }
+        
     } else {
         res.status(300).json('ID cart no existe')
     }
