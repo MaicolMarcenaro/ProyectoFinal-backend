@@ -1,0 +1,40 @@
+<article>
+    <h1>Productos:</h1>
+    <form action="/api/products" method="post" enctype="multipart/form-data">
+        <input type="text" name="title" placeholder="Nombre" required>
+        <input type="text" name="category" placeholder="Category" required>
+        <input type="text" name="description" placeholder="Description" required>
+        <input type="number" name="price" placeholder="Precio" required>
+        <input type="file" name="thumbnails" placeholder="Foto" required>
+        <input type="text" name="code" placeholder="Code" required>
+        <input type="text" name="stock" placeholder="Stock" required>
+        <input type="submit" value="Guardar">
+    </form>
+</article>
+<article>
+    <a href="{{products.prevLink}}" role="button" {{#unless products.hasPrevPage}}disabled{{/unless}} >Anterior</a>
+    <a href="{{products.nextLink}}" role="button" {{#unless products.hasNextPage}}disabled{{/unless}} >Siguiente</a>
+    <p>Pagina actual: {{products.page}}</p>
+    <table>
+        <tr>
+            <th>Nombre</th>
+            <th>Categoria</th>
+            <th>Precio</th>
+            <th>Foto</th>
+            <th></th>
+        </tr>
+        {{#each productsDetails}}
+            <tr>
+                <td>{{this.title}}</td>
+                <td>{{this.category}}</td>
+                <td>{{this.price}}</td>
+                <td><img src='{{this.thumbnails}}' alt="Lentes de sol" width="150px"></td>
+                <td><a href='http://localhost:8080/product/{{this._id}}' role="button">Ver Producto</a></td>
+            </tr>
+        {{/each}}
+    </table>
+    <p>Pagina actual: {{products.page}}</p>
+    <a href="{{products.prevLink}}" role="button" {{#unless products.hasPrevPage}}disabled{{/unless}} >Anterior</a>
+    <a href="{{products.nextLink}}" role="button" {{#unless products.hasNextPage}}disabled{{/unless}} >Siguiente</a>
+
+</article>

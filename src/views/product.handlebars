@@ -1,0 +1,14 @@
+<article>
+    <h1>Producto {{this.title}}</h1>
+    <p>Category: {{this.category}}</p>
+    <img src='{{this.thumbnails}}' alt="Lentes de sol" width="150px">
+    <p>Description: {{this.description}}</p>
+    <p>Precio: {{this.price}}</p>
+    <p>Code: {{this.code}}</p>
+
+    <form action="/api/carts" method="post">
+        <input type="number" name="quantity" placeholder="Cantidad" required>
+        <input type="text" name="product" placeholder="ID Producto" value="{{this._id}}" disabled required >
+        <input type="submit" value="Agregar">
+    </form>
+</article>
