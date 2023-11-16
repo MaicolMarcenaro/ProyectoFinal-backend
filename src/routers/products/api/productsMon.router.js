@@ -2,6 +2,7 @@ import {Router} from 'express';
 import ProductManager from '../../../dao/productsManager.js';
 import { uploader } from '../../../utils.js';
 
+
 const router = Router();
 
 router.get('/products', async(req, res)=>{

@@ -1,8 +1,10 @@
 import mongoose from "mongoose";
 
+export const URI = 'mongodb+srv://maicolmarcenaro:18JosnJf3ALsfJWb@cluster0.4higmct.mongodb.net/E-commerce'
+
 export const init = async ()=>{
     try {
-        const url= 'mongodb+srv://maicolmarcenaro:18JosnJf3ALsfJWb@cluster0.4higmct.mongodb.net/E-commerce';
+        const url= URI;
         console.log('Conectado a la base')
         await mongoose.connect(url);
     } catch (error) {
