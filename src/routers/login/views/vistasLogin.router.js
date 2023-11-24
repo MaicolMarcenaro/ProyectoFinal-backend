@@ -24,6 +24,9 @@ router.get('/login',publicZone, (req, res)=>{
 router.get('/profile', privateAdmin, (req, res)=>{
     res.render('profile', {user: req.session.user})
 })
+router.get('/recovery-password',publicZone, (req, res)=>{
+    res.render('recovery-password')
+})
 
 
 export default router;

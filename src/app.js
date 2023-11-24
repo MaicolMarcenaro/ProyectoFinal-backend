@@ -5,6 +5,8 @@ import MongoStore from 'connect-mongo'
 import { URI } from './db/mongodb.js';
 import path from 'path';
 import { __dirname } from './utils.js';
+import {init as initPassport} from './config/passport.config.js';
+import passport from 'passport';
 
 import productApiRouter from './routers/products/api/productsMon.router.js'
 import cartApiRouter from './routers/carts/api/cartsMon.router.js'
@@ -35,6 +37,13 @@ app.use(expressSession({
     resave:true,
     saveUninitialized:true
 }))
+
+initPassport()
+
+app.use(passport.initialize())
+app.use(passport.session())
+
+
 app.use('/', productViewRouter, cartViewRouter, viewsLogin);
 app.use('/api', productApiRouter,  cartApiRouter, loginApiRouter);
 
