@@ -18,14 +18,15 @@ export const init = () => {
     passport.use('register', new LocalStrategy(opts, async (req, email, password, done) => {
       try {
         const user = await userModel.findOne({ email });
+        let newUser = {}
         if (user) {
           return done(new Error('User already register 😨'));
         }
         if (email==="adminCoder@coder.com" && password==="adminCod3r123") {
-            const newUser = {...req.body,password:createHash(body.password), role:"admin"}
+            newUser = {...req.body,password:createHash(req.body.password), role:"admin"}
             await userModel.create(newUser)
         }else{
-            const newUser = {...req.body,password:createHash(body.password), role:"usuario"}
+            newUser = {...req.body,password:createHash(req.body.password), role:"usuario"}
             await userModel.create(newUser)
         }
         done(null, newUser);
