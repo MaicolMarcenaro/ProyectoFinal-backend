@@ -1,18 +1,21 @@
 import userModel from "../models/user.model.js";
-import { createHash, isValidPassword } from "../utils.js";
+import { createHash, isValidPassword, tokenGenerator, verifyToken } from "../utils.js";
 import passport from 'passport'
 import {Strategy as LocalStrategy} from 'passport-local'
 import { Strategy as GithubStrategy } from 'passport-github2';
 
+
 const opts = {
-    usernameField: 'email',
+    usernameField: "email",
     passReqToCallback: true,
 }
+
 const githubOpts = {
   clientID: 'Iv1.bf50fd786116c829', 
   clientSecret: '9fca9b70ec04ed2cf5a8f56c83f03a0011797fa5',
   callbackURL: "http://localhost:8080/api/sessions/github/callback", 
 };
+
 
 export const init = () => {
     passport.use('register', new LocalStrategy(opts, async (req, email, password, done) => {
@@ -23,11 +26,9 @@ export const init = () => {
           return done(new Error('User already register 😨'));
         }
         if (email==="adminCoder@coder.com" && password==="adminCod3r123") {
-            newUser = {...req.body,password:createHash(req.body.password), role:"admin"}
-            await userModel.create(newUser)
+            newUser = await userModel.create({...req.body,password:createHash(password), role:"admin"})
         }else{
-            newUser = {...req.body,password:createHash(req.body.password), role:"usuario"}
-            await userModel.create(newUser)
+            newUser = await userModel.create ({...req.body,password:createHash(password), role:"usuario"})
         }
         done(null, newUser);
       } catch (error) {
@@ -45,25 +46,40 @@ export const init = () => {
         if (!isPassValid) {
           return done(new Error('Correo o contraseña invalidos 😨'));
         }
-        done(null, user);
+        const token = tokenGenerator(user)
+        newUser= [{user, token}]
+        done(null, newUser);
       } catch (error) {
         done(new Error(`Ocurrio un error durante la autenticacion ${error.message} 😨.`));
       }
     }));
 
     passport.use('github', new GithubStrategy(githubOpts, async (accessToken, refreshToken, profile, done) => {
+      console.log('profile', profile);
       let email = profile._json.email;
+      if (!email) { 
+        let data = await fetch('https://api.github.com/user/public_emails', {
+          headers: {
+            Authorization: `token ${accessToken}`,
+          },
+        });
+        data = await data.json();
+        console.log('data', data);
+        const target = data.find((item) => item.primary && item.verified);
+        email = target.email;
+      } 
       let user = await userModel.findOne({ email });
       if (user) {
         return done(null, user);
       }
       user = {
-        first_name: profile._json.name,
+        first_name: profile.username,
         last_name: '',
         email,
         age: 18,
         password: '',
         provider: 'Github',
+        role: "usuario"
       };
   
       const newUser = await userModel.create(user);

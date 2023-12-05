@@ -9,7 +9,8 @@ router.post('/sessions/register', passport.authenticate('register', {failureRedi
     res.redirect('/login')
 })
 router.post('/sessions/login',passport.authenticate('login', { failureRedirect: '/login' }), async(req, res)=>{
-    req.session.user= req.user
+    req.session.user= req.newUser.user
+    res.status(200).cookie('access_token', req.newUser.token, {maxAge:600000, httpOnly: true, signed:true}).json({message: 'Inicio de session correcto'})
     res.redirect('/products')
 })
 

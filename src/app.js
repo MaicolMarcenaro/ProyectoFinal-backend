@@ -7,6 +7,7 @@ import path from 'path';
 import { __dirname } from './utils.js';
 import {init as initPassport} from './config/passport.config.js';
 import passport from 'passport';
+import cookieParser from 'cookie-parser';
 
 import productApiRouter from './routers/products/api/productsMon.router.js'
 import cartApiRouter from './routers/carts/api/cartsMon.router.js'
@@ -18,6 +19,9 @@ import viewsLogin from './routers/login/views/vistasLogin.router.js'
 
 const app = express()
 
+
+
+app.use(cookieParser(SESSION_SECRET))
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(express.static(path.join(__dirname,'../public')));
