@@ -2,7 +2,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import multer from 'multer';
 import bcrypt from 'bcrypt';
-import passport from 'passport';
 import JWT from 'jsonwebtoken';
 
 
@@ -10,12 +9,7 @@ const __filename = fileURLToPath(import.meta.url);
 
 export const __dirname = path.dirname(__filename);
 
-// export class Exception extends error(){
-//     constructor(message, status){
-//         super(message)
-//         this.statusCode = status
-//     }
-// }
+export const JWT_SECRET = 'qBvPkU2X;J1,51Z!~2p[JW.DT|g:4l@';
 
 export const createHash = (password) =>{
     return bcrypt.hashSync(password, bcrypt.genSaltSync(10));
@@ -33,12 +27,12 @@ export const tokenGenerator = (user)=>{
         email,
         role,
     };
-    return JWT.sign(payload,'qBvPkU2X;J1,51Z!~2p[JW.DT|g:4l@',{expiresIn: '10m'});
+    return JWT.sign(payload, JWT_SECRET ,{expiresIn: '10m'});
 }
 
 export const verifyToken = (token)=>{
     return new Promise((resolve, reject) => {
-        JWT.verify(token,'qBvPkU2X;J1,51Z!~2p[JW.DT|g:4l@',(error, payload)=>{
+        JWT.verify(token,JWT_SECRET,(error, payload)=>{
             if (error) {
                 return reject(error)
             }
@@ -60,3 +54,32 @@ const storage = multer.diskStorage({
 })
 export const uploader= multer({storage});
 
+export class Exception extends Error {
+    constructor(message, statusCode) {
+      super(message);
+      this.status = statusCode;
+    }
+  }
+  export class NotFoundException extends Exception {
+    constructor(message) {
+      super(message, 404);
+    }
+  }
+  
+  export class BadRequestException extends Exception {
+    constructor(message) {
+      super(message, 400);
+    }
+  }
+  
+  export class UnauthorizedException extends Exception {
+    constructor(message) {
+      super(message, 401);
+    }
+  }
+  
+  export class ForbiddenException extends Exception {
+    constructor(message) {
+      super(message, 403);
+    }
+  }

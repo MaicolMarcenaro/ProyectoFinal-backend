@@ -1,17 +1,16 @@
 import express from 'express';
 import handlebars from 'express-handlebars';
-import expressSession from 'express-session'
-import MongoStore from 'connect-mongo'
-import { URI } from './db/mongodb.js';
 import path from 'path';
-import { __dirname } from './utils.js';
+import { __dirname, Exception } from './utils.js';
 import {init as initPassport} from './config/passport.config.js';
 import passport from 'passport';
 import cookieParser from 'cookie-parser';
+import cors from 'cors'
 
 import productApiRouter from './routers/products/api/productsMon.router.js'
 import cartApiRouter from './routers/carts/api/cartsMon.router.js'
 import loginApiRouter from './routers/login/api/sessions.router.js'
+import userApiRouter from './routers/user/api/user.router.js'
 
 import productViewRouter from './routers/products/views/products.router.js'
 import cartViewRouter from './routers/carts/views/carts.router.js'
@@ -19,9 +18,13 @@ import viewsLogin from './routers/login/views/vistasLogin.router.js'
 
 const app = express()
 
-
-
-app.use(cookieParser(SESSION_SECRET))
+const corsOptions = {
+    origin: 'http://localhost:5500',
+    methods: ['GET','POST','PUT'],
+  };
+  
+app.use(cors(corsOptions));
+app.use(cookieParser())
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(express.static(path.join(__dirname,'../public')));
@@ -29,36 +32,28 @@ app.use(express.static(path.join(__dirname,'../public')));
 app.engine('handlebars', handlebars.engine());
 app.set('views',path.join(__dirname,'./views'));
 app.set('view engine','handlebars');
-const SESSION_SECRET = 'qBvPkU2X;J1,51Z!~2p[JW.DT|g:4l@';
 
-app.use(expressSession({
-    secret: SESSION_SECRET,
-    store : MongoStore.create({
-        mongoUrl: URI,
-        mongoOptions:{},
-        ttl:360
-    }), 
-    resave:true,
-    saveUninitialized:true
-}))
 
 initPassport()
 
 app.use(passport.initialize())
-app.use(passport.session())
 
 
 app.use('/', productViewRouter, cartViewRouter, viewsLogin);
-app.use('/api', productApiRouter,  cartApiRouter, loginApiRouter);
+app.use('/api', productApiRouter,  cartApiRouter, loginApiRouter, userApiRouter);
 
 app.get('/', (req, res)=>{
     res.send('Inicio de app')
 });
 
-app.use((error,req,res,next)=>{
-    const message = `Ah ocurrido un error ${error.message}`;
-    console.log(message);
-    res.status(500).json({'message' : message});
-})
+app.use((error, req, res, next) => {
+    if (error instanceof Exception) {
+      res.status(error.status).json({ status: 'error', message: error.message });
+    } else {
+      const message = `Ah ocurrido un error desconocido 😨: ${error.message}`;
+      console.log(message);
+      res.status(500).json({ status: 'error', message });
+    }
+  });
 
 export default app;
